@@ -1,0 +1,312 @@
+{
+    "meta": {
+        "name": "high_fidelity_clothing_swap_prompt",
+        "version": "1.0",
+        "description": "Swap only the main garment from a source image onto a person in a target image with strict identity/scene lock and photorealistic, scene-matched integration (optimized for weaker instruction-following models)."
+    },
+    "inputs": {
+        "target_image": {
+            "id": "target_image",
+            "role": "target",
+            "description": "Image containing the person and environment to preserve; only the clothing on the main person is changed.",
+            "preserve": {
+                "person": [
+                    "identity",
+                    "face",
+                    "eyes",
+                    "eye_color",
+                    "eyebrows",
+                    "nose",
+                    "mouth",
+                    "teeth",
+                    "jawline",
+                    "ears",
+                    "facial_expression",
+                    "hair_color",
+                    "hair_style",
+                    "hair_position",
+                    "skin_tone",
+                    "skin_texture",
+                    "body_proportions",
+                    "pose",
+                    "hands",
+                    "fingers"
+                ],
+                "scene": [
+                    "background",
+                    "environment",
+                    "lighting_setup",
+                    "exposure",
+                    "white_balance",
+                    "color_grading",
+                    "camera_angle",
+                    "framing",
+                    "composition",
+                    "depth_of_field",
+                    "film_grain_or_noise",
+                    "compression_artifacts"
+                ],
+                "accessories": [
+                    "jewelry",
+                    "watches",
+                    "eyeglasses",
+                    "hats",
+                    "bags",
+                    "other_non_garment_accessories"
+                ]
+            }
+        },
+        "source_garment_image": {
+            "id": "source_garment_image",
+            "role": "garment_source",
+            "description": "Image containing the exact garment to transfer onto the target person.",
+            "garment": {
+                "type": "the single main visible outer garment to transfer from the reference image (e.g., dress, shirt, blazer, jacket, top). Do NOT transfer the reference person's face, hair, body, or background.",
+                "attributes_to_transfer": {
+                    "structure": [
+                        "overall_cut",
+                        "silhouette",
+                        "overall_fit_type",
+                        "neckline_shape_if_present",
+                        "collar_shape_if_present",
+                        "sleeve_style_and_length_if_present",
+                        "hem_length_and_shape",
+                        "paneling_and_darts_if_visible",
+                        "pleats_or_gathers_if_visible"
+                    ],
+                    "material": [
+                        "fabric_type_appearance",
+                        "sheen_or_gloss_level",
+                        "apparent_thickness",
+                        "apparent_stiffness_or_fluidity",
+                        "surface_texture_or_weave_if_visible"
+                    ],
+                    "visual_details": [
+                        "pattern_or_print_layout_if_present",
+                        "logos_or_emblems_if_present",
+                        "embroidery_or_applique_if_present",
+                        "embellishments_if_present",
+                        "visible_stitching_if_present",
+                        "visible_buttons_if_present",
+                        "visible_zippers_if_present",
+                        "visible_hooks_or_buckles_if_present",
+                        "visible_seams_and_hems"
+                    ]
+                }
+            }
+        }
+    },
+    "instructions": {
+        "primary_operation": {
+            "action": "clothing_swap",
+            "summary": "Replace ONLY the main visible outer garment on the person in the target image with the main visible outer garment from the source garment image. Everything else must remain identical to the target image.",
+            "priority": "critical",
+            "notes": "Hard rule: edit clothing only. Do not change face/identity/hair/body/skin/background/accessories. If uncertain about any change outside the garment region, do NOT make that change. Final must look like an original photo of the target person wearing the source garment in the same scene."
+        },
+        "constraints": [
+            {
+                "id": "C1",
+                "name": "identity_preservation",
+                "priority": "critical",
+                "description": "Lock the target person's identity and all non-garment elements. Any change outside the garment is an error.",
+                "parameters": [],
+                "rules": [
+                    "Non-negotiable: Only the garment may change. Everything else must remain identical to the target image.",
+                    "Do not change the face, facial proportions, facial expression, or identity. No face swap.",
+                    "Do not change eye shape, eye color, eyebrows, nose, mouth, teeth, jawline, ears, or facial symmetry.",
+                    "Do not beautify, retouch, smooth skin, change age, change makeup, or change skin tone.",
+                    "Hair color, style, position, volume, and stray strands must remain unchanged.",
+                    "Body proportions, pose, hands, and fingers must remain exactly the same.",
+                    "Accessories (jewelry, watches, eyeglasses, hats, bags, straps) must remain unchanged and in the same positions.",
+                    "Background/environment/camera/framing/composition must remain unchanged (no background edits)."
+                ]
+            },
+            {
+                "id": "C2",
+                "name": "garment_fidelity",
+                "priority": "critical",
+                "description": "Transfer the garment design DNA from the source garment image onto the target person without inventing new features.",
+                "parameters": [],
+                "rules": [
+                    "Use the single main visible outer garment from the source garment image as the garment to transfer.",
+                    "Preserve the garment’s essential shape and cut: neckline/collar (if present), sleeves (if present), silhouette, and hem length/shape.",
+                    "Preserve unique identifiers: patterns/prints/logos/embroidery/embellishments when present.",
+                    "Preserve material appearance: matte vs sheen, thickness, stiffness/fluidity, and visible weave/texture.",
+                    "Retain visible construction details such as seams, stitching, darts, pleats, and fasteners wherever visible.",
+                    "Do not invent garment features that are not visible in the source garment image.",
+                    "Do not change the target body to fit the garment; adapt the garment to the target body and pose."
+                ]
+            },
+            {
+                "id": "C3",
+                "name": "scene_color_correction",
+                "priority": "high",
+                "description": "Match the target scene’s lighting/color on the garment while keeping the garment recognizable.",
+                "parameters": [],
+                "rules": [
+                    "Maintain the garment’s recognizable base color/pattern identity while adjusting brightness/contrast/saturation to fit the target scene.",
+                    "Match the target image’s white balance, color temperature, and ambient/bounce light on the garment.",
+                    "Highlights/shadows on the garment must match the target scene’s light direction and color.",
+                    "Do not apply global color grading or exposure changes to the whole image; only adapt the garment."
+                ]
+            },
+            {
+                "id": "C4",
+                "name": "physical_realism",
+                "priority": "high",
+                "description": "Ensure realistic drape, folds, and interaction with the target body/pose.",
+                "parameters": [],
+                "rules": [
+                    "Conform the garment to the target anatomy and pose (shoulders/chest/waist/hips/arms/torso).",
+                    "Add realistic folds/wrinkles/tension where fabric bends or compresses (elbows/waist/underarms).",
+                    "Respect gravity and fabric weight: light fabrics drape; heavy fabrics hold structure.",
+                    "Avoid impossible intersections/clipping between garment, skin, hair, accessories, or objects."
+                ]
+            },
+            {
+                "id": "C5",
+                "name": "lighting_integration",
+                "priority": "high",
+                "description": "The garment must match the target image’s lighting characteristics and tonal behavior.",
+                "parameters": [
+                    "light_direction",
+                    "light_intensity",
+                    "shadow_direction",
+                    "shadow_softness",
+                    "shadow_density",
+                    "highlight_position",
+                    "reflection_behavior",
+                    "subsurface_scattering_on_thin_or_translucent_fabrics"
+                ],
+                "rules": [
+                    "Align shadow direction/softness/intensity on the garment to existing shadows in the target scene.",
+                    "Match specular highlight positions and colors to the target light sources.",
+                    "Avoid any lighting that contradicts the target scene’s lighting."
+                ]
+            },
+            {
+                "id": "C6",
+                "name": "camera_match",
+                "priority": "medium",
+                "description": "The garment must match the camera and processing characteristics of the target image.",
+                "parameters": [
+                    "depth_of_field",
+                    "focal_plane",
+                    "sharpness",
+                    "film_grain_or_noise",
+                    "compression_artifacts",
+                    "lens_distortion",
+                    "chromatic_aberration"
+                ],
+                "rules": [
+                    "Match sharpness/focus of the garment to nearby regions on the target person.",
+                    "Match noise/film grain/compression artifacts to the target image.",
+                    "Respect depth-of-field: out-of-focus regions must remain out-of-focus."
+                ]
+            },
+            {
+                "id": "C7",
+                "name": "edge_and_boundary_fidelity",
+                "priority": "critical",
+                "description": "Clean, natural garment boundaries with correct occlusion and contact shadows; no halos or cutout edges.",
+                "parameters": [],
+                "rules": [
+                    "Edges at neckline/collar/sleeves/cuffs/waist/hem must be clean and natural.",
+                    "Add correct contact shadows where garment touches skin/body.",
+                    "Preserve correct occlusion: hair/accessories must overlap the garment exactly as in the target image when they originally overlap that region.",
+                    "Avoid halos, bright outlines, cutout edges, or pasted-on appearance.",
+                    "Do not modify face edges, hair strands, hands, or background while fixing garment boundaries."
+                ]
+            },
+            {
+                "id": "C8",
+                "name": "layer_interactions",
+                "priority": "medium",
+                "description": "Maintain coherent interactions between the new garment and existing accessories/layers in the target image.",
+                "parameters": [],
+                "rules": [
+                    "Maintain hair overlap behavior over shoulders/chest; do not move hair.",
+                    "Preserve necklaces/scarves/chains relative layering where possible.",
+                    "Keep bag straps/belts/outerwear logically consistent with the target scene and the new garment.",
+                    "If the garment is sheer, render underlying anatomy/clothing realistically without changing identity."
+                ]
+            }
+        ]
+    },
+    "negative_constraints": {
+        "description": "Visual artifacts and errors that must not appear in the final output.",
+        "categories": [
+            {
+                "name": "anatomy",
+                "items": [
+                    "face_changed_or_identity_drift",
+                    "different_person_or_face_swap",
+                    "beautification_or_face_retouching",
+                    "changed_eye_color_or_iris_detail",
+                    "changed_hairline_or_facial_hair",
+                    "extra_limbs",
+                    "missing_limbs",
+                    "extra_fingers",
+                    "missing_fingers",
+                    "warped_or_mangled_hands",
+                    "distorted_facial_features",
+                    "altered_body_proportions",
+                    "misaligned_shoulders_or_hips"
+                ]
+            },
+            {
+                "name": "garment_structure",
+                "items": [
+                    "duplicate_clothing_layers",
+                    "visible_remnants_of_original_target_garment",
+                    "incorrect_neckline_type",
+                    "incorrect_sleeve_style_or_length",
+                    "broken_or_misaligned_seams",
+                    "floating_or_detached_garment_pieces",
+                    "physically_impossible_stretch_or_compression"
+                ]
+            },
+            {
+                "name": "texture_and_material",
+                "items": [
+                    "melted_or_smudged_textures",
+                    "overly_plastic_or_waxy_skin",
+                    "overly_blurred_or_over_smoothed_fabric",
+                    "excessively_oversharpened_edges",
+                    "loss_of_fabric_weave_detail_where_resolution_is_high",
+                    "material_behavior_that_does_not_match_the_apparent_fabric_type"
+                ]
+            },
+            {
+                "name": "compositing_and_integration",
+                "items": [
+                    "halo_edges_or_glows_around_garment",
+                    "sticker_or_cutout_appearance",
+                    "mismatched_lighting_direction_or_intensity",
+                    "incorrect_shadow_color_or_placement",
+                    "floating_or_visibly_detached_garment",
+                    "inconsistent_noise_or_grain_between_garment_and_scene",
+                    "visible_inpainting_or_blending_artifacts",
+                    "background_changed_or_replaced",
+                    "global_color_grade_or_exposure_changed",
+                    "accessories_removed_or_changed"
+                ]
+            }
+        ]
+    },
+    "output": {
+        "quality": {
+            "style": "photorealistic",
+            "integration": "seamless_and_indistinguishable_from_a_real_photograph",
+            "resolution": "match_target_image_resolution",
+            "texture_fidelity": "preserve_target_image_detail_and_processing; garment texture matches source identity while matching target noise/grain"
+        },
+        "success_criteria": [
+            "A typical viewer cannot tell that the clothing has been digitally swapped.",
+            "The garment on the target person is clearly recognizable as the same main garment worn by the reference person.",
+            "The target person's face, hair, skin tone, and body shape are identical to the target image.",
+            "The background and accessories are identical to the target image.",
+            "Lighting, color, texture, and grain of the garment match the target scene convincingly."
+        ]
+    }
+}

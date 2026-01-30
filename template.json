@@ -1,0 +1,136 @@
+{
+    "meta": {
+        "name": "high_fidelity_clothing_swap_template",
+        "version": "1.0",
+        "description": "Full-structure template (schema skeleton)"
+    },
+    "inputs": {
+        "target_image": {
+            "id": "image_1",
+            "role": "target",
+            "description": "",
+            "preserve": {
+                "person": [],
+                "scene": [],
+                "accessories": []
+            }
+        },
+        "source_garment_image": {
+            "id": "image_2",
+            "role": "garment_source",
+            "description": "",
+            "garment": {
+                "type": "",
+                "attributes_to_transfer": {
+                    "structure": [],
+                    "material": [],
+                    "visual_details": []
+                }
+            }
+        }
+    },
+    "instructions": {
+        "primary_operation": {
+            "action": "clothing_swap",
+            "summary": "",
+            "priority": "medium/high/critical",
+            "notes": ""
+        },
+        "constraints": [
+            {
+                "id": "C1",
+                "name": "identity_preservation",
+                "priority": "medium/high/critical",
+                "description": "",
+                "parameters": [],
+                "rules": []
+            },
+            {
+                "id": "C2",
+                "name": "garment_fidelity",
+                "priority": "medium/high/critical",
+                "description": "",
+                "parameters": [],
+                "rules": []
+            },
+            {
+                "id": "C3",
+                "name": "scene_color_correction",
+                "priority": "medium/high/critical",
+                "description": "",
+                "parameters": [],
+                "rules": []
+            },
+            {
+                "id": "C4",
+                "name": "physical_realism",
+                "priority": "medium/high/critical",
+                "description": "",
+                "parameters": [],
+                "rules": []
+            },
+            {
+                "id": "C5",
+                "name": "lighting_integration",
+                "priority": "medium/high/critical",
+                "description": "",
+                "parameters": [],
+                "rules": []
+            },
+            {
+                "id": "C6",
+                "name": "camera_match",
+                "priority": "medium/high/critical",
+                "description": "",
+                "parameters": [],
+                "rules": []
+            },
+            {
+                "id": "C7",
+                "name": "edge_and_boundary_fidelity",
+                "priority": "medium/high/critical",
+                "description": "",
+                "parameters": [],
+                "rules": []
+            },
+            {
+                "id": "C8",
+                "name": "layer_interactions",
+                "priority": "medium/high/critical",
+                "description": "",
+                "parameters": [],
+                "rules": []
+            }
+        ]
+    },
+    "negative_constraints": {
+        "description": "",
+        "categories": [
+            {
+                "name": "anatomy",
+                "items": []
+            },
+            {
+                "name": "garment_structure",
+                "items": []
+            },
+            {
+                "name": "texture_and_material",
+                "items": []
+            },
+            {
+                "name": "compositing_and_integration",
+                "items": []
+            }
+        ]
+    },
+    "output": {
+        "quality": {
+            "style": "",
+            "integration": "",
+            "resolution": "",
+            "texture_fidelity": ""
+        },
+        "success_criteria": []
+    }
+}
